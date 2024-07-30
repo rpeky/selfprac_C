@@ -1,0 +1,19 @@
+Objective - to build functions fromm scratch based on their man pages in order better understanding behind how they work
+
+
+
+Complete
+
+
+
+Somewhat finished but bugged
+
+
+
+
+WIP
+
+
+
+
+No clue - to revisit
