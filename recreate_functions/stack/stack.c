@@ -1,5 +1,17 @@
 #include <stdio.h>
 
+typedef union thingo{
+    int &thing;
+    float &thing;
+
+    char &thing;
+
+}thingo;
+
+typedef struct thingy{
+    
+
+}thingy;
 
 void push(){
 
