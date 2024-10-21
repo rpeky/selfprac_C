@@ -1,15 +1,19 @@
 #include <stdio.h>
 
+typedef struct intstack{
+    int *stack;
+
+}inststack;
+
 typedef union thingo{
     int &thing;
     float &thing;
-
     char &thing;
 
 }thingo;
 
 typedef struct thingy{
-    
+    void *stackarr;
 
 }thingy;
 
