@@ -41,7 +41,7 @@ int pop(mystack *a){
 }
 
 int peek(mystack *a){
-    return a->stack[a->size];
+    return a->stack[a->size-1];
 }
 
 int isEmpty_elsesize(mystack *a){
@@ -60,6 +60,11 @@ void printstack(mystack *a){
     }
 }
 
+void freestack(mystack *a){
+    free(a->stack);
+    a->stack=NULL;
+}
+
 int main(int argc, char **argv){
     //create and initialise stack
     mystack stack1;
@@ -71,15 +76,13 @@ int main(int argc, char **argv){
     push(&stack1, 4);
     push(&stack1, 5); 
     push(&stack1, 6);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-    pop(&stack1);
-
     printstack(&stack1);
+    printf("peeking top value: %d\n",peek(&stack1));
+    printf("popped %d\n",pop(&stack1));
+    printf("peeking top value: %d\n",peek(&stack1));
+    printstack(&stack1);
+
+    freestack(&stack1);
+    
     return 0;
 }
