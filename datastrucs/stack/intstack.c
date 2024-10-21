@@ -18,7 +18,7 @@ void initstack(mystack *a, unsigned initialsz){
 }
 
 void push(mystack *a, int x){
-	//check for overflows
+	//check for overflows if pushing to stack
 	if(a->maxstack > UINT_MAX/2){
 		printf("stack size overflow");
 		exit(-1);
@@ -28,7 +28,7 @@ void push(mystack *a, int x){
 		a->stack=realloc(a->stack, a->maxstack*sizeof(int));
 		
 		if(a->stack==NULL){
-			printf("malloc failed\n");
+			printf("realloc failed\n");
 			exit(-1);
 		}
 	}
@@ -57,7 +57,7 @@ int isEmpty(mystack *a){
 	return a->size==0;
 }
 
-int stacksize(mystack *a){
+unsigned stacksize(mystack *a){
 	return a->size;
 }
 
