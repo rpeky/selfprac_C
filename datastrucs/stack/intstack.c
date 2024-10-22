@@ -20,7 +20,7 @@ void initstack(mystack *a, unsigned initialsz){
 void push(mystack *a, int x){
 	//check for overflows if pushing to stack
 	if(a->maxstack > UINT_MAX/2){
-		printf("stack size overflow");
+		printf("stack size overflow\n");
 		exit(-1);
 	}
 	if(a->size==a->maxstack){
