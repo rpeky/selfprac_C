@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 typedef struct intstack{
 	int *stack;
@@ -53,7 +54,8 @@ typedef enum {
 	TYPE_CHAR,
 	TYPE_STR,
 	TYPE_PTR,
-	TYPE_STRUCT
+	TYPE_STRUCT,
+    TYPE_NONE
 }types;
 
 typedef struct omnistack{
@@ -77,6 +79,7 @@ void initomnistack(omnistack *s, unsigned initialsz){
     s->maxstack=initialsz;
 
 }
+
 void push(omnistack *s, void *dataref, types datatype){
     if(s->maxstack > UINT_MAX/2){
         printf("stack size overflow\n");
@@ -99,19 +102,46 @@ void push(omnistack *s, void *dataref, types datatype){
     s->size+=1;
 }
 
-void pop(){
+/*
+void *pop(omnistack *s){
+    if(s->size>0){
+        ;
+    }
+    else{
+        printf("empty queue\n");
+    }
+}
+*/
 
+typedef struct popval{
+    types valtype;
+    void *valaddr;
+}popval;
+
+popval pop(omnistack *s){
+    popval sol;
+    if(s->size>0){
+        s->size-=1;
+        sol.valtype = intpop(s->typetrack_stack);
+        sol.valaddr = s->stack[s->size];
+        return sol;
+    }
+
+    printf("empty stack\n");
+    sol.valtype = TYPE_NONE;
+    sol.valaddr = NULL;
+    return sol;
 }
 
-void peek(int type, void *top){
+void peek(omnistack *s, int type, void *top){
 
     switch (type){
         //int 
         case TYPE_INT:
             printf("%d\n",*(int *)top);
             break;
-        
-            //long
+
+        //long
         case TYPE_LONG:
             printf("%ld\n",*(long *)top);
             break;
