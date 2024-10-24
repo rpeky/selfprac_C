@@ -59,7 +59,7 @@ typedef enum {
 }types;
 
 typedef struct omnistack{
-	intstack typetrack_stack;
+	intstack *typetrack_stack;
 	void **stack;
 	unsigned size;
 	unsigned maxstack;
@@ -67,7 +67,8 @@ typedef struct omnistack{
 
 void initomnistack(omnistack *s, unsigned initialsz){
     //initialise tracking stack
-    int_initstack(&s->typetrack_stack,2);
+    s->typetrack_stack = (intstack*)malloc(sizeof(intstack));
+    int_initstack(s->typetrack_stack,2);
 
     s->stack=(void*)malloc(initialsz*sizeof(void*));
     if(s->stack==NULL){
@@ -96,7 +97,7 @@ void push(omnistack *s, void *dataref, types datatype){
         }
     }
 
-    intpush(&s->typetrack_stack, datatype);
+    intpush(s->typetrack_stack, datatype);
 
     s->stack[s->size]=dataref;
     s->size+=1;
@@ -122,7 +123,7 @@ popval pop(omnistack *s){
     popval sol;
     if(s->size>0){
         s->size-=1;
-        sol.valtype = intpop(&s->typetrack_stack);
+        sol.valtype = intpop(s->typetrack_stack);
         sol.valaddr = s->stack[s->size];
         return sol;
     }
