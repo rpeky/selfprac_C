@@ -264,11 +264,15 @@ void test_omnique() {
 
     int x = 1, y = 2;
     double d = 3.1415;
+    char a= 'a';
+    char *st = "testingabc";
 
     // Test enqueuing different types
     enqueue(&myqueue, &x, TYPE_INT);
     enqueue(&myqueue, &d, TYPE_DOUBLE);
     enqueue(&myqueue, &y, TYPE_INT);
+    enqueue(&myqueue, &a, TYPE_CHAR);
+    enqueue(&myqueue, st, TYPE_STR);
 
     // Test dequeuing values
     popval val = dequeue(&myqueue);
@@ -282,6 +286,15 @@ void test_omnique() {
     val = dequeue(&myqueue);
     printf("Dequeued value: ");
     peek(val.valtype, val.valaddr); // Expected: 2 (int)
+
+    val = dequeue(&myqueue);
+    printf("Dequeued value: ");
+    peek(val.valtype, val.valaddr); // Expected: 'a' (char)
+
+    val = dequeue(&myqueue);
+    printf("Dequeued value: ");
+    peek(val.valtype, val.valaddr); // Expected: 'a' (char)
+
 
     freeomnistack(myqueue.left_stack);
     freeomnistack(myqueue.right_stack);
