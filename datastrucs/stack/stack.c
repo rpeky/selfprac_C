@@ -46,6 +46,13 @@ int intpop(intstack *a){
 	return a->stack[a->size];
 }
 
+void freeintstack(intstack *a){
+	free(a->stack);
+	a->stack=NULL;
+	a->size=0;
+	a->maxstack=0;
+}
+
 typedef enum {
 	TYPE_INT,
 	TYPE_LONG,
@@ -103,17 +110,6 @@ void push(omnistack *s, void *dataref, types datatype){
     s->size+=1;
 }
 
-/*
-void *pop(omnistack *s){
-    if(s->size>0){
-        ;
-    }
-    else{
-        printf("empty queue\n");
-    }
-}
-*/
-
 typedef struct popval{
     types valtype;
     void *valaddr;
@@ -134,7 +130,7 @@ popval pop(omnistack *s){
     return sol;
 }
 
-void peek(omnistack *s, int type, void *top){
+void peek(int type, void *top){
 
     switch (type){
         //int 
@@ -179,6 +175,17 @@ void peek(omnistack *s, int type, void *top){
 
 }
 
+void freeomnistack(omnistack *s){
+        free(s->stack);
+        s->stack = NULL;
+
+        freeintstack(s->typetrack_stack);
+        s->typetrack_stack=NULL;
+        
+        s->size=0;
+        s->maxstack=0;
+}
+
 int main(int argc, char **argv){
 	omnistack stack1;
 	initomnistack(&stack1, 2);
@@ -186,7 +193,18 @@ int main(int argc, char **argv){
 	int a = 5;
 	char b = 'a';
 	float c = 1.1;
-	
+    push(&stack1, &a, TYPE_INT);
+    push(&stack1, &b, TYPE_CHAR);
+    push(&stack1, &c, TYPE_FLOAT);
+
+                // Pop values and display them
+    popval val = pop(&stack1);
+    peek(val.valtype, val.valaddr);
+    val = pop(&stack1);
+    peek(val.valtype, val.valaddr);
+    val = pop(&stack1);
+    peek(val.valtype, val.valaddr);
+    freeomnistack(&stack1);
 	
 	return 0;
 }
