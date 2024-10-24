@@ -238,6 +238,120 @@ void freeomniqueue(omnique *q){
     free(q->right_stack);
 }
 
-int main(int argc, char **argv){
+void test_omnistack() {
+    omnistack mystack;
+    initomnistack(&mystack, 2);
 
+    // Test pushing integers
+    int a = 5, b = 10;
+    push(&mystack, &a, TYPE_INT);
+    push(&mystack, &b, TYPE_INT);
+
+    popval val = pop(&mystack);
+    printf("Popped value (int): ");
+    peek(val.valtype, val.valaddr); // Expected: 10
+
+    val = pop(&mystack);
+    printf("Popped value (int): ");
+    peek(val.valtype, val.valaddr); // Expected: 5
+
+    freeomnistack(&mystack);
+}
+
+void test_omnique() {
+    omnique myqueue;
+    initqueue(&myqueue);
+
+    int x = 1, y = 2;
+    double d = 3.1415;
+
+    // Test enqueuing different types
+    enqueue(&myqueue, &x, TYPE_INT);
+    enqueue(&myqueue, &d, TYPE_DOUBLE);
+    enqueue(&myqueue, &y, TYPE_INT);
+
+    // Test dequeuing values
+    popval val = dequeue(&myqueue);
+    printf("Dequeued value: ");
+    peek(val.valtype, val.valaddr); // Expected: 1 (int)
+
+    val = dequeue(&myqueue);
+    printf("Dequeued value: ");
+    peek(val.valtype, val.valaddr); // Expected: 3.1415 (double)
+
+    val = dequeue(&myqueue);
+    printf("Dequeued value: ");
+    peek(val.valtype, val.valaddr); // Expected: 2 (int)
+
+    freeomnistack(myqueue.left_stack);
+    freeomnistack(myqueue.right_stack);
+}
+
+void test_empty_stack_queue() {
+    omnistack mystack;
+    initomnistack(&mystack, 2);
+    
+    // Attempt to pop from an empty stack
+    popval val = pop(&mystack);
+    printf("Popped from empty stack: ");
+    if (val.valtype == TYPE_NONE) {
+        printf("Empty stack detected successfully\n");
+    }
+
+    omnique myqueue;
+    initqueue(&myqueue);
+
+    // Attempt to dequeue from an empty queue
+    val = dequeue(&myqueue);
+    printf("Dequeued from empty queue: ");
+    if (val.valtype == TYPE_NONE) {
+        printf("Empty queue detected successfully\n");
+    }
+
+    freeomnistack(&mystack);
+    freeomnistack(myqueue.left_stack);
+    freeomnistack(myqueue.right_stack);
+}
+
+void test_mixed_data_types() {
+    omnistack mystack;
+    initomnistack(&mystack, 2);
+
+    int a = 10;
+    float b = 3.14f;
+    char c = 'A';
+
+    push(&mystack, &a, TYPE_INT);
+    push(&mystack, &b, TYPE_FLOAT);
+    push(&mystack, &c, TYPE_CHAR);
+
+    popval val = pop(&mystack);
+    printf("Popped value (char): ");
+    peek(val.valtype, val.valaddr); // Expected: 'A'
+
+    val = pop(&mystack);
+    printf("Popped value (float): ");
+    peek(val.valtype, val.valaddr); // Expected: 3.14
+
+    val = pop(&mystack);
+    printf("Popped value (int): ");
+    peek(val.valtype, val.valaddr); // Expected: 10
+
+    freeomnistack(&mystack);
+}
+
+int main(int argc, char **argv) {
+    printf("Testing omnistack:\n");
+    test_omnistack();
+
+    printf("\nTesting omnique (queue):\n");
+    test_omnique();
+
+    printf("\nTesting empty stack and queue:\n");
+    test_empty_stack_queue();
+
+    printf("\nTesting mixed data types in omnistack:\n");
+    test_mixed_data_types();
+
+    return 0;
 }
