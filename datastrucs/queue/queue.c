@@ -24,14 +24,14 @@ void intpush(intstack *a, int x){
 		printf("stack size overflow\n");
 		exit(-1);
 	}
-	if(a->size==a->maxstack){
-		a->maxstack*=2;
-		a->stack=realloc(a->stack, a->maxstack*sizeof(int));
-		
-		if(a->stack==NULL){
-			printf("realloc failed\n");
-			exit(-1);
-		}
+	if(a->size==a->maxstack){	
+		int *tempstack=realloc(a->stack, a->maxstack*2*sizeof(int));
+        if(tempstack==NULL){
+            printf("realloc failed\n");
+            exit(-1);
+        }
+        a->stack=tempstack;
+        a->maxstack*=2;
 	}
 	a->stack[a->size]=x;
 	a->size+=1;
@@ -95,13 +95,15 @@ void push(omnistack *s, void *dataref, types datatype){
     }
 
     if(s->size==s->maxstack){
-        s->maxstack*=2;
-        s->stack=realloc(s->stack, s->maxstack*sizeof(void*));
+        
+        void **tempstack=realloc(s->stack, s->maxstack*2*sizeof(void*));
 
-        if(s->stack==NULL){
+        if(tempstack==NULL){
             printf("stack realloc failed\n");
             exit(-1);
         }
+        s->stack=tempstack;
+        s->maxstack*=2;
     }
 
     intpush(s->typetrack_stack, datatype);
@@ -117,6 +119,9 @@ typedef struct popval{
 
 popval pop(omnistack *s){
     popval sol;
+    sol.valtype = TYPE_NONE;
+    sol.valaddr = NULL;
+
     if(s->size>0){
         s->size-=1;
         sol.valtype = intpop(s->typetrack_stack);
@@ -125,8 +130,7 @@ popval pop(omnistack *s){
     }
 
     printf("empty stack\n");
-    sol.valtype = TYPE_NONE;
-    sol.valaddr = NULL;
+    
     return sol;
 }
 
@@ -171,6 +175,7 @@ popval dequeue(omnique *q){
         printf("empty queue\n");
         sol.valtype = TYPE_NONE;
         sol.valaddr = NULL;
+        return sol;
     }
 
     sol = pop(q->right_stack);
@@ -218,10 +223,20 @@ void peek(int type, void *top){
         case TYPE_STRUCT:
             printf("Item is a struct, unable to print whole struct\n");
             break;
+
+        default:
+            printf("Unknown type, unable to peek\n");
+            break;
     }
 
 }
 
+void freeomniqueue(omnique *q){
+    freeomnistack(q->left_stack);
+    freeomnistack(q->right_stack);
+    free(q->left_stack);
+    free(q->right_stack);
+}
 
 int main(int argc, char **argv){
 
